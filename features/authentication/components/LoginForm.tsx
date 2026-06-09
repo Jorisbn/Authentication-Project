@@ -5,6 +5,10 @@ import { useAuth } from "../hooks/authHooks";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import Field from "@/ui/field";
+import Input from "@/ui/input";
+import Button from "@/ui/button";
+import Alert from "@/ui/alert";
 
 export function LoginForm() {
     const router = useRouter();
@@ -65,8 +69,10 @@ export function LoginForm() {
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
 
-        const data = { email, password };
-        await login(data);
+        try {
+            const data = { email, password };
+            await login(data);
+        } catch {}
     };
 
     const handleVerification = async (e: React.SyntheticEvent) => {
@@ -83,12 +89,14 @@ export function LoginForm() {
 
         const numberCode = parseInt(code);
 
-        await verify2FA({
-            transId: transId,
-            code: numberCode,
-        });
+        try {
+            await verify2FA({
+                transId: transId,
+                code: numberCode,
+            });
 
-        router.push("/dashboard");
+            router.push("/dashboard");
+        } catch {}
     };
 
     return (
@@ -105,16 +113,11 @@ export function LoginForm() {
                                 <p className="text-zinc-500 mt-2">Welcome back</p>
                             </div>
 
-                            <div className="flex flex-col gap-2 text-zinc-700">
-                                <label
-                                    htmlFor="email"
-                                    className="text-sm font-medium"
-                                >
-                                    Email address
-                                </label>
-
-                                <input
-                                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                            <Field
+                                label="Email address"
+                                htmlFor="email"
+                            >
+                                <Input
                                     type="email"
                                     name="email"
                                     placeholder="you@example.com"
@@ -122,36 +125,30 @@ export function LoginForm() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
-                            </div>
+                            </Field>
 
-                            <div className="flex flex-col gap-2 text-zinc-700">
-                                <label
-                                    htmlFor="password"
-                                    className="text-sm font-medium"
-                                >
-                                    Password
-                                </label>
-
-                                <input
-                                    className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                            <Field
+                                label="Password"
+                                htmlFor="password"
+                            >
+                                <Input
                                     type="password"
                                     name="password"
-                                    placeholder=""
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                            </div>
+                            </Field>
 
-                            <button
-                                className="w-full cursor-pointer rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                            <Button
                                 type="submit"
-                                disabled={loading}
+                                loading={loading}
+                                loadingText="Logging in..."
                             >
-                                {loading ? "Logging in..." : "Login"}
-                            </button>
+                                Login
+                            </Button>
 
-                            {error && <p className="rounded-md bg-red-100 px-4 py-2 text-sm text-red-600">{error}</p>}
+                            {error && <Alert variant="error">{error}</Alert>}
                         </form>
                         <div className="flex gap-2 text-mist-600">
                             <Link
@@ -201,7 +198,7 @@ export function LoginForm() {
 
                                     <div className="flex gap-1.5">
                                         {twoFaCode.map((digit, index) => (
-                                            <input
+                                            <Input
                                                 key={index}
                                                 ref={(el) => {
                                                     inputsRef.current[index] = el;
@@ -219,14 +216,15 @@ export function LoginForm() {
                                     </div>
                                 </div>
 
-                                <button
+                                <Button
                                     type="submit"
-                                    className="cursor-pointer w-full rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700"
+                                    loading={loading}
+                                    loadingText="Verifing..."
                                 >
-                                    Verify & Continue
-                                </button>
+                                    Verify
+                                </Button>
 
-                                {error && <p className="rounded-md bg-red-100 px-4 py-2 text-sm text-red-600">{error}</p>}
+                                {error && <Alert variant="error">{error}</Alert>}
                             </>
                         )}
                     </form>
@@ -248,7 +246,7 @@ export function LoginForm() {
 
                             <div className="flex gap-1.5">
                                 {twoFaCode.map((digit, index) => (
-                                    <input
+                                    <Input
                                         key={index}
                                         ref={(el) => {
                                             inputsRef.current[index] = el;
@@ -260,20 +258,21 @@ export function LoginForm() {
                                         onChange={(e) => handleInputChange(e.target.value, index)}
                                         onKeyDown={(e) => handleKeyDown(e, index)}
                                         onPaste={handlePaste}
-                                        className="h-14 w-14 rounded-xl border border-zinc-300 text-center text-2xl font-semibold outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        className="h-14 w-14 rounded-xl border border-zinc-300 text-center text-2xl font-semibold outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 "
                                     />
                                 ))}
                             </div>
                         </div>
 
-                        <button
+                        <Button
                             type="submit"
-                            className="cursor-pointer w-full rounded-lg bg-blue-600 py-2 px-6 font-medium text-white transition hover:bg-blue-700"
+                            loading={loading}
+                            loadingText="Verifing..."
                         >
                             Verify
-                        </button>
+                        </Button>
 
-                        {error && <p className="rounded-md bg-red-100 px-4 py-2 text-sm text-red-600">{error}</p>}
+                        {error && <Alert variant="error">{error}</Alert>}
                     </form>
                 )}
             </div>

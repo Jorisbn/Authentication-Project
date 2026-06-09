@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/authHooks";
 import Link from "next/link";
+import Field from "@/ui/field";
+import Input from "@/ui/input";
+import Button from "@/ui/button";
+import Alert from "@/ui/alert";
 
 export function PasswordResetForm() {
     const { loading, error, resetToken, forgotPassword } = useAuth();
@@ -10,10 +14,11 @@ export function PasswordResetForm() {
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
+        try {
+            const data = { email };
 
-        const data = { email };
-
-        await forgotPassword(data);
+            await forgotPassword(data);
+        } catch {}
     };
 
     return (
@@ -34,16 +39,11 @@ export function PasswordResetForm() {
                         <h2 className="text-3xl font-bold text-zinc-800">Forgot Password</h2>
                     </div>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="email"
-                            className="text-sm font-medium"
-                        >
-                            Email address
-                        </label>
-
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="Email address"
+                        htmlFor="email"
+                    >
+                        <Input
                             type="email"
                             name="email"
                             placeholder="you@example.com"
@@ -51,22 +51,29 @@ export function PasswordResetForm() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
 
-                    <button
-                        className="w-full cursor-pointer rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    <Button
                         type="submit"
-                        disabled={loading}
+                        loading={loading}
+                        loadingText="Working..."
                     >
-                        {loading ? "Working..." : "Reset Password"}
-                    </button>
+                        Reset Password
+                    </Button>
 
-                    {error && <p className="rounded-md bg-red-100 px-4 py-2 text-sm text-red-600">{error}</p>}
+                    {error && <Alert variant="error">{error}</Alert>}
 
                     {resetToken && (
-                        <p>
-                            Please go <Link href={`/reset-password?resetToken=${resetToken}`}>here</Link> to change your password
-                        </p>
+                        <Alert variant="info">
+                            Please go{" "}
+                            <Link
+                                className="underline"
+                                href={`/reset-password?resetToken=${resetToken}`}
+                            >
+                                here
+                            </Link>{" "}
+                            to change your password
+                        </Alert>
                     )}
                 </form>
             </div>

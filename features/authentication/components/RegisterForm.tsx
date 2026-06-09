@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/authHooks";
 import Link from "next/link";
+import Field from "@/ui/field";
+import Input from "@/ui/input";
+import Button from "@/ui/button";
 
 export function RegisterForm() {
     const { loading, error, register } = useAuth();
@@ -14,11 +17,13 @@ export function RegisterForm() {
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) throw new Error("Passwords must match");
+        try {
+            if (password !== confirmPassword) throw new Error("Passwords must match");
 
-        await register({ email, password });
+            await register({ email, password });
 
-        setMessage("Registering Successful");
+            setMessage("Registering Successful");
+        } catch {}
     };
 
     return (
@@ -39,15 +44,11 @@ export function RegisterForm() {
                         <h2 className="text-3xl font-bold text-zinc-800">Register</h2>
                     </div>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="email"
-                            className="text-sm font-medium"
-                        >
-                            Email address
-                        </label>
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="Email address"
+                        htmlFor="email"
+                    >
+                        <Input
                             type="email"
                             name="email"
                             placeholder="you@example.com"
@@ -55,17 +56,13 @@ export function RegisterForm() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="password"
-                            className="text-sm font-medium"
-                        >
-                            Password
-                        </label>
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="Password"
+                        htmlFor="password"
+                    >
+                        <Input
                             type="password"
                             name="password"
                             placeholder=""
@@ -73,17 +70,13 @@ export function RegisterForm() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="passwordConfirm"
-                            className="text-sm font-medium"
-                        >
-                            Confirm password
-                        </label>
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="Confirm password"
+                        htmlFor="passwordConfirm"
+                    >
+                        <Input
                             type="password"
                             name="passwordConfirm"
                             placeholder=""
@@ -91,15 +84,15 @@ export function RegisterForm() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
 
-                    <button
-                        className="w-full cursor-pointer rounded-lg bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    <Button
                         type="submit"
-                        disabled={loading}
+                        loading={loading}
+                        loadingText="Registering"
                     >
-                        {loading ? "Registering..." : "Register"}
-                    </button>
+                        Register
+                    </Button>
 
                     {error && <p>{error}</p>}
 

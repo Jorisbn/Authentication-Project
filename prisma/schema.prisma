@@ -19,7 +19,7 @@ model User {
   transId          String?   @unique
   base32           String?
   sessions         Session[]
-  resetToken       String?
+  resetToken       String?   @unique
 }
 
 model Session {

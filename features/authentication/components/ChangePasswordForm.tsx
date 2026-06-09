@@ -2,26 +2,37 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { changePassword } from "../services/authApi";
+import { useAuth } from "../hooks/authHooks";
+
+import Field from "@/ui/field";
+import Input from "@/ui/input";
+import Button from "@/ui/button";
+import Link from "next/link";
+import Alert from "@/ui/alert";
 
 export function ChangePasswordForm() {
     const searchParams = useSearchParams();
     const resetToken = searchParams.get("resetToken");
+    const { loading, error, changePassword } = useAuth();
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [message, setMessage] = useState<string>("");
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
+        try {
+            if (!resetToken) throw new Error("Missing reset token");
+            if (password !== confirmPassword) throw new Error("Passwords are not the same");
 
-        if (!resetToken) throw new Error("Missing reset token");
-        if (password !== confirmPassword) throw new Error("Passwords are not the same");
+            const data = {
+                resetToken,
+                password,
+            };
 
-        const data = {
-            resetToken,
-            password,
-        };
+            await changePassword(data);
 
-        await changePassword(data);
+            setMessage("Password changed successfully");
+        } catch {}
     };
 
     return (
@@ -32,44 +43,58 @@ export function ChangePasswordForm() {
                     className="space-y-6 w-full"
                 >
                     <div className="text-center">
-                        <h2 className="text-3xl font-bold text-zinc 800">Update Password</h2>
+                        <h2 className="text-3xl font-bold text-zinc-800">Update Password</h2>
                     </div>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="password"
-                            className="text-sm font-medium"
-                        >
-                            Password
-                        </label>
-
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="password"
+                        htmlFor="password"
+                    >
+                        <Input
                             type="password"
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
 
-                    <div className="flex flex-col gap-2 text-zinc-700">
-                        <label
-                            htmlFor="confirmPassword"
-                            className="text-sm font-medium"
-                        >
-                            Confirm password
-                        </label>
-
-                        <input
-                            className="w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    <Field
+                        label="Confirm Password"
+                        htmlFor="confirmPassword"
+                    >
+                        <Input
                             type="password"
                             name="confirmPassword"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
                         />
-                    </div>
+                    </Field>
+
+                    {!message && (
+                        <Button
+                            type="submit"
+                            loading={loading}
+                            loadingText="Resetting..."
+                        >
+                            Reset Password
+                        </Button>
+                    )}
+
+                    {error && <Alert variant="error">{error}</Alert>}
+
+                    {message && (
+                        <Alert variant="info">
+                            {message}{" "}
+                            <Link
+                                className="underline"
+                                href="/login"
+                            >
+                                Back to login
+                            </Link>
+                        </Alert>
+                    )}
                 </form>
             </div>
         </div>

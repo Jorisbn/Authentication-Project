@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/ui/button";
 import { useAuth } from "../hooks/authHooks";
 import { useRouter } from "next/navigation";
 
@@ -8,18 +9,20 @@ export function LogoutForm() {
     const { logout, loading } = useAuth();
 
     const handleLogout = async () => {
-        await logout();
+        try {
+            await logout();
 
-        router.push("/login");
+            router.push("/login");
+        } catch {}
     };
 
     return (
-        <button
+        <Button
             onClick={handleLogout}
             disabled={loading}
-            className="cursor-pointer w-full rounded-lg bg-blue-600 font-medium text-white transition hover:bg-blue-700 py-2 px-6"
+            loadingText="Logging out"
         >
             Logout
-        </button>
+        </Button>
     );
 }

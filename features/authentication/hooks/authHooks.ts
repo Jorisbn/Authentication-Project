@@ -42,6 +42,7 @@ export function useAuth() {
             return res;
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -58,6 +59,7 @@ export function useAuth() {
             return res;
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -71,6 +73,7 @@ export function useAuth() {
             await authService.LogoutUser();
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -84,6 +87,7 @@ export function useAuth() {
             await authService.registerUser(data);
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -96,9 +100,10 @@ export function useAuth() {
         try {
             const res = await authService.forgotPasswordUser(data);
 
-            setResetToken(res.resetToken);
+            setResetToken(res.data.resetToken);
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -112,6 +117,7 @@ export function useAuth() {
             await authService.changePassword(data);
         } catch (err) {
             handleError(err);
+            throw err;
         } finally {
             setLoading(false);
         }

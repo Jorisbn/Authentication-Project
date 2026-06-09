@@ -70,7 +70,7 @@ export async function changePassword({ resetToken, password }: ChangePasswordUse
     const res = await fetch("/api/auth/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resetToken, password }),
+        body: JSON.stringify({ token: resetToken, password }),
     });
 
     if (!res.ok) throw new Error("Password change failed");

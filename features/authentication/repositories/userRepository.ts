@@ -13,6 +13,12 @@ export async function findUserByTransId(token: string) {
     });
 }
 
+export async function findUserByResetToken(token: string) {
+    return prisma.user.findUnique({
+        where: { resetToken: token },
+    });
+}
+
 export async function updateUser(id: string, data: Partial<User>) {
     return prisma.user.update({
         where: { id },
