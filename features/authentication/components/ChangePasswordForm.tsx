@@ -51,6 +51,7 @@ export function ChangePasswordForm() {
                         htmlFor="password"
                     >
                         <Input
+                            id="password"
                             type="password"
                             name="password"
                             value={password}
@@ -64,6 +65,7 @@ export function ChangePasswordForm() {
                         htmlFor="confirmPassword"
                     >
                         <Input
+                            id="confirmPassword"
                             type="password"
                             name="confirmPassword"
                             value={confirmPassword}

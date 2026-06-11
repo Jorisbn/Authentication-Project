@@ -44,6 +44,7 @@ export function PasswordResetForm() {
                         htmlFor="email"
                     >
                         <Input
+                            id="email"
                             type="email"
                             name="email"
                             placeholder="you@example.com"

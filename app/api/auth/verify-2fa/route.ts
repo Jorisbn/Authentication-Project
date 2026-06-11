@@ -2,14 +2,24 @@ import { clearUserTransId, findUserByTransId } from "@/features/authentication/r
 import { createSession } from "@/features/authentication/services/authService";
 import { verify2FA } from "@/libs/2FA/verify2fa";
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/libs/RateLimiter";
+import { normalizeIp } from "@/libs/normalizeIp";
+
+import { userAgent } from "next/server";
 
 export async function POST(request: Request) {
+    const { browser, device, os } = userAgent(request);
     const { transId, code }: { transId: string; code: string } = await request.json();
     if (!transId || !code) return Response.json({ state: "Error", message: "Missing token or code" }, { status: 400 });
 
     try {
         const user = await findUserByTransId(transId);
         if (!user) return Response.json({ state: "Error", message: "Invalid Authtoken" }, { status: 400 });
+
+        const ip = normalizeIp(request.headers.get("x-forwarded-for") || request.headers.get("remote_addr") || "unknown");
+
+        const result = await rateLimit(ip);
+        if (!result.success) return new Response(JSON.stringify({ message: "Too many requests", retryAfter: result.retryAfter }), { status: 429, headers: { "Content-Type": "application/json" } });
 
         const secret = user.base32 || "";
 
@@ -18,7 +28,11 @@ export async function POST(request: Request) {
 
         await clearUserTransId(user.id);
 
-        const { sessionId, expiresAt } = await createSession(user.id);
+        const userDevice = device.type ?? "Desktop";
+        const userOs = os.name ?? "";
+        const userBrowser = browser.name ?? "";
+
+        const { sessionId, expiresAt } = await createSession({ userId: user.id, browser: userBrowser, os: userOs, deviceType: userDevice, ipAddress: ip });
 
         const response = NextResponse.json({ state: "Success", message: "Success" }, { status: 200 });
 

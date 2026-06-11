@@ -49,6 +49,7 @@ export function RegisterForm() {
                         htmlFor="email"
                     >
                         <Input
+                            id="email"
                             type="email"
                             name="email"
                             placeholder="you@example.com"
@@ -63,6 +64,7 @@ export function RegisterForm() {
                         htmlFor="password"
                     >
                         <Input
+                            id="password"
                             type="password"
                             name="password"
                             placeholder=""
@@ -77,6 +79,7 @@ export function RegisterForm() {
                         htmlFor="passwordConfirm"
                     >
                         <Input
+                            id="passwordConfirm"
                             type="password"
                             name="passwordConfirm"
                             placeholder=""

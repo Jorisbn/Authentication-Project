@@ -1,7 +1,8 @@
 import { encrypt } from "@/libs/2FA/crypto/encryption";
 import { generate2FA } from "@/libs/2FA/enable2fa";
 import bcrypt from "bcrypt";
-import { createSessionId } from "../repositories/sessionRepository";
+import { sessionService } from "./sessionService";
+import { Session } from "@prisma/client";
 
 export async function verifyPassword(input: string, hash: string) {
     return bcrypt.compare(input, hash);
@@ -16,11 +17,11 @@ export async function setup2FA(userEmail: string) {
     };
 }
 
-export async function createSession(userId: string) {
-    const session = await createSessionId(userId);
+export async function createSession({ userId, browser, os, deviceType, ipAddress }: Pick<Session, "userId" | "browser" | "os" | "deviceType" | "ipAddress">) {
+    const session = await sessionService.createSession(userId, browser, os, deviceType, ipAddress);
 
     return {
-        sessionId: session.id,
+        sessionId: session.sessionId,
         expiresAt: session.expiresAt,
     };
 }

@@ -14,7 +14,7 @@ export async function loginUser({ email, password }: Pick<User, "email" | "passw
 
 export async function LogoutUser() {
     const res = await fetch("/api/auth/logout", {
-        method: "POST",
+        method: "DELETE",
         headers: { "Content-Type": "application/json", credentials: "include" },
     });
 
@@ -44,17 +44,6 @@ export async function forgotPasswordUser({ email }: Pick<User, "email">) {
     return res.json();
 }
 
-export async function updatePasswordUser({ email, password }: Pick<User, "email" | "password">) {
-    const res = await fetch("/api/auth/update-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-    });
-
-    if (!res.ok) throw new Error("Updating password failed");
-    return res.json();
-}
-
 export async function verify2FAUser({ transId, code }: Verify2FAUser) {
     const res = await fetch("/api/auth/verify-2fa", {
         method: "POST",
@@ -68,7 +57,7 @@ export async function verify2FAUser({ transId, code }: Verify2FAUser) {
 
 export async function changePassword({ resetToken, password }: ChangePasswordUser) {
     const res = await fetch("/api/auth/change-password", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: resetToken, password }),
     });
