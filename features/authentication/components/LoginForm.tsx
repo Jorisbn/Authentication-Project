@@ -118,6 +118,7 @@ export function LoginForm() {
                                 htmlFor="email"
                             >
                                 <Input
+                                    id="email"
                                     type="email"
                                     name="email"
                                     placeholder="you@example.com"
@@ -132,6 +133,7 @@ export function LoginForm() {
                                 htmlFor="password"
                             >
                                 <Input
+                                    id="password"
                                     type="password"
                                     name="password"
                                     value={password}
@@ -194,11 +196,17 @@ export function LoginForm() {
                                 </div>
 
                                 <div className="flex flex-col gap-2 text-zinc-700">
-                                    <label className="text-sm font-medium">Verification code</label>
+                                    <label
+                                        className="text-sm font-medium"
+                                        htmlFor="twofa"
+                                    >
+                                        Verification code
+                                    </label>
 
                                     <div className="flex gap-1.5">
                                         {twoFaCode.map((digit, index) => (
                                             <Input
+                                                id="twofa"
                                                 key={index}
                                                 ref={(el) => {
                                                     inputsRef.current[index] = el;
@@ -242,11 +250,17 @@ export function LoginForm() {
                         </div>
 
                         <div className="flex flex-col gap-2 text-zinc-700">
-                            <label className="text-sm font-medium">Verification code</label>
+                            <label
+                                className="text-sm font-medium"
+                                htmlFor="twofa"
+                            >
+                                Verification code
+                            </label>
 
                             <div className="flex gap-1.5">
                                 {twoFaCode.map((digit, index) => (
                                     <Input
+                                        id="twofa"
                                         key={index}
                                         ref={(el) => {
                                             inputsRef.current[index] = el;

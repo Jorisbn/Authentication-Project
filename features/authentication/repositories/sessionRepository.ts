@@ -1,22 +1,25 @@
 import { prisma } from "@/libs/prisma";
+import type { Session } from "@prisma/client";
 
-export async function createSessionId(id: string) {
-    return prisma.session.create({
-        data: {
-            userId: id,
-            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-        },
-    });
-}
+export const sessionRepository = {
+    create: ({ userId, browser, deviceType, ipAddress, expiresAt, os }: Omit<Session, "id" | "createdAt">) =>
+        prisma.session.create({
+            data: { userId, browser, deviceType, ipAddress, expiresAt, os },
+        }),
 
-export async function findSession(id: string) {
-    return prisma.session.findUnique({
-        where: { id },
-    });
-}
+    findById: (id: string) =>
+        prisma.session.findUnique({
+            where: { id },
+            include: { user: true },
+        }),
 
-export async function deleteSession(id: string) {
-    return prisma.session.delete({
-        where: { id },
-    });
-}
+    delete: (id: string) =>
+        prisma.session.delete({
+            where: { id },
+        }),
+
+    deleteByUserId: (userId: string) =>
+        prisma.session.deleteMany({
+            where: { userId },
+        }),
+};

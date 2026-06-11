@@ -23,10 +23,16 @@ model User {
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  expiresAt DateTime
+  id     String @id @default(cuid())
+  userId String
+
+  browser    String?
+  deviceType String?
+  os         String?
+  ipAddress  String?
+
   createdAt DateTime @default(now())
+  expiresAt DateTime
 
   user User @relation(fields: [userId], references: [id])
 

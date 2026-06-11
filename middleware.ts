@@ -17,3 +17,20 @@ export function middleware(req: NextRequest) {
     }
     return NextResponse.next();
 }
+
+/* Middleware check if server was external instead, due to it not running `FS` 
+import { NextResponse } from "next/server";
+import { getSessionFromRequest } from "@/features/authentication/utils/sessionHelper";
+
+export async function middleware(request: Request) {
+  const session = await getSessionFromRequest();
+
+  const isDashboard = request.url.includes("/dashboard");
+
+  if (isDashboard && !session) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+*/

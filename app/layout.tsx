@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/shared/Theme/providers/ThemeProvider";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -16,7 +17,14 @@ export default function RootLayout({
             lang="en"
             className={`h-full antialiased`}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="h-full">
+                <main
+                    className="min-h-full flex flex-col"
+                    role="main"
+                >
+                    <ThemeProvider>{children}</ThemeProvider>
+                </main>
+            </body>
         </html>
     );
 }
